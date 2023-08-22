@@ -4,7 +4,9 @@
 package com.eazybytes.accounts.controller;
 
 import com.eazybytes.accounts.config.AccountsServiceConfig;
-import com.eazybytes.accounts.model.Properties;
+import com.eazybytes.accounts.feignclients.CardsFeignClient;
+import com.eazybytes.accounts.feignclients.LoansFeignClient;
+import com.eazybytes.accounts.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -14,9 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eazybytes.accounts.model.Accounts;
-import com.eazybytes.accounts.model.Customer;
 import com.eazybytes.accounts.repository.AccountsRepository;
+
+import java.util.List;
 
 
 /**
@@ -32,6 +34,12 @@ public class AccountsController {
 
 	@Autowired
 	private AccountsServiceConfig accountsServiceConfig;
+
+	@Autowired
+	private CardsFeignClient cardsFeignClient;
+
+	@Autowired
+	private LoansFeignClient loansFeignClient;
 
 	@PostMapping("/myAccount")
 	public Accounts getAccountDetails(@RequestBody Customer customer) {
@@ -53,6 +61,20 @@ public class AccountsController {
 				accountsServiceConfig.getMailDetails(), accountsServiceConfig.getActiveBranches());
 
         return ow.writeValueAsString(properties);
+	}
+
+	@PostMapping("/myCustomerDetails")
+	public CustomerDetails myCustomerDetails(@RequestBody Customer customer) {
+		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
+		List<Loans> loans = loansFeignClient.getLoanDetails(customer);
+		List<Cards> cards = cardsFeignClient.getCardDetails(customer);
+
+		CustomerDetails customerDetails = new CustomerDetails();
+		customerDetails.setAccounts(accounts);
+		customerDetails.setLoans(loans);
+		customerDetails.setCards(cards);
+
+		return customerDetails;
 	}
 
 }

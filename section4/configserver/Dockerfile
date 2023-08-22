@@ -1,4 +1,4 @@
-FROM openjdk:11-slim as build
+FROM openjdk:17-alpine as build
 
 COPY target/configserver-0.0.1-SNAPSHOT.jar configserver-0.0.1-SNAPSHOT.jar
 
