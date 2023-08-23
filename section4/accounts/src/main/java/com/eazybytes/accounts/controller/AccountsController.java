@@ -68,10 +68,10 @@ public class AccountsController {
 	}
 
 	@PostMapping("/myCustomerDetails")
-	@CircuitBreaker(name = "detailsForCustomerSupportApp", fallbackMethod = "myCustomerDetailsFallBack")
+	/*@CircuitBreaker(name = "detailsForCustomerSupportApp", fallbackMethod = "myCustomerDetailsFallBack")
 	@Retry(name = "retryForCustomerDetails", fallbackMethod = "myCustomerDetailsFallBack")
 	@RateLimiter(name="detailsForCustomerSupportApp", fallbackMethod = "myCustomerDetailsFallBack")
-	@Bulkhead(name="bulkheadAccounts", fallbackMethod = "bulkheadAccountsFallBack")
+	@Bulkhead(name="bulkheadAccounts", fallbackMethod = "bulkheadAccountsFallBack")*/
 	public CustomerDetails myCustomerDetails(@RequestBody Customer customer) {
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
 		List<Loans> loans = loansFeignClient.getLoanDetails(customer);
