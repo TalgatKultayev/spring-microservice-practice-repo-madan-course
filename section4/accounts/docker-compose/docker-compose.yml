@@ -2,6 +2,14 @@ version: "3.8"
 
 services:
 
+  zipkin:
+    image: openzipkin/zipkin
+    mem_limit: 700m
+    ports:
+      - "9411:9411"
+    networks:
+      - eazybank
+
   configserver:
     image: talgatkultayev/configserver:latest
     mem_limit: 700m
@@ -9,6 +17,8 @@ services:
       - "8071:8071"
     networks:
       - eazybank
+    depends_on:
+      - zipkin
 
   eurekaserver:
     image: talgatkultayev/eurekaserver:latest
