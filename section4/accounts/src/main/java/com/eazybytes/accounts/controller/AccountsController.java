@@ -92,6 +92,12 @@ public class AccountsController {
 		return customerDetails;
 	}
 
+	@GetMapping("/sayHello")
+	@RateLimiter(name = "sayHello", fallbackMethod = "sayHelloFallback")
+	public String sayHello() {
+		return "Hello, Welcome to EazyBank Kubernetes cluster";
+	}
+
 	private CustomerDetails myCustomerDetailsFallBack(Customer customer, Throwable throwable) {
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
 		List<Loans> loans = loansFeignClient.getLoanDetails(customer);
@@ -101,6 +107,10 @@ public class AccountsController {
 		customerDetails.setLoans(loans);
 
 		return customerDetails;
+	}
+
+	private String sayhelloFallback(Throwable t) {
+		return "Hi, Welcome to EazyBank";
 	}
 
 }
