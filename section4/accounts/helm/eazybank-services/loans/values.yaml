@@ -14,7 +14,7 @@ image:
 containerPort: 8090
 
 service:
-  type: LoadBalancer
+  type: 
   port: 8090
   targetPort: 8090
 
